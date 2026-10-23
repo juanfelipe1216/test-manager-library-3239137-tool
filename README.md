@@ -73,3 +73,15 @@ no borra datos y no es idempotente. Reporta los vencidos del lote propio.
 - node cover-check.mjs: subida PNG real, descarga, eliminación y rechazo
   de contenido falso o mayor a 2 MB. Requiere al menos un libro activo.
 Ambas usan la API y no imprimen tokens ni credenciales.
+
+## Catálogo colombiano real
+colombian-books.json contiene 32 ediciones verificadas. Consultar
+CATALOGO-FUENTES.md para procedencia y conversión de ISBN-10 a ISBN-13.
+Ejecutar node real-catalogue.mjs con credenciales en el entorno.
+El script cierra préstamos de los libros ficticios reconocidos, los da
+de baja lógicamente e importa las ediciones reales. Conserva el historial.
+Crea 15 préstamos de demostración sobre libros reales, con tres vencidos.
+Los socios y las existencias siguen siendo datos de demostración.
+El sembrador original seed.mjs se conserva como prueba del lote de 40
+libros exigido inicialmente; real-catalogue.mjs genera un catálogo de 32
+ediciones reales, no afirma crear 40 ediciones reales.
