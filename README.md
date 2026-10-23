@@ -48,3 +48,28 @@ No hay prórroga: suban avances parciales con commits pequeños durante la prueb
 | [`test-manager-library-3239137-page`](https://github.com/code-sena/test-manager-library-3239137-page) | Sitio público estático de presentación |
 | [`test-manager-library-3239137-infra`](https://github.com/code-sena/test-manager-library-3239137-infra) | Contenedores, red, volúmenes y motor de base de datos vacío |
 | [`test-manager-library-3239137-tool`](https://github.com/code-sena/test-manager-library-3239137-tool) | Utilidades: sembrador de datos de demostración |
+
+## Sembrador implementado
+
+Requiere Node 24 y la API local funcionando con APP_ENV=local.
+Copiar .env.example a .env y configurar el mismo administrador del backend.
+Ejecutar npm run seed. No tiene dependencias npm externas.
+
+Crea por HTTP 40 libros, 10 socios y 15 préstamos. Tres préstamos
+se crean con un reloj local controlado, quince días en el pasado:
+la API sigue calculando due_at como loaned_at + 14 días.
+El archivo temporal storage/app/demo-clock.txt está ignorado por Git,
+no existe un endpoint para modificar el reloj y el adaptador solo
+lee este archivo en APP_ENV=local. El sembrador lo elimina al terminar,
+incluso ante un error. No usar el reloj de demostración en producción.
+No ejecutar el sembrador a la vez que pruebas u operaciones reales.
+
+Cada ejecución crea un lote nuevo con identificadores de demostración;
+no borra datos y no es idempotente. Reporta los vencidos del lote propio.
+
+## Pruebas complementarias
+- node concurrency.mjs: dos solicitudes sobre el último ejemplar y dos
+  devoluciones simultáneas. Requiere el administrador configurado en .env.
+- node cover-check.mjs: subida PNG real, descarga, eliminación y rechazo
+  de contenido falso o mayor a 2 MB. Requiere al menos un libro activo.
+Ambas usan la API y no imprimen tokens ni credenciales.
